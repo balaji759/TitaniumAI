@@ -29,7 +29,7 @@ Here's a glimpse of TITANIUM AI in action:
 
 | Main Chat Interface | Code Execution | Dark Mode |
 | :---: | :---: | :---: |
-| ![Chat Interface](https://i.imgur.com/screenshot1.png) | ![Code Execution](https://i.imgur.com/screenshot2.png) | ![Dark Mode](https://i.imgur.com/screenshot3.png) |
+| ![Chat Interface](https://github.com/balaji759/TitaniumAI/blob/main/Screenshot_2025-09-13-14-33-57-94_7f2807fc2a8edc110218502ed98cb1d0.jpg) | ![Code Execution](https://github.com/balaji759/TitaniumAI/blob/main/Screenshot_2025-09-13-14-34-11-09_7f2807fc2a8edc110218502ed98cb1d0.jpg) | ![Dark Mode](https://github.com/balaji759/TitaniumAI/blob/main/Screenshot_2025-09-13-14-35-41-56_7f2807fc2a8edc110218502ed98cb1d0.jpg) |
 
 ## 🚀 Installation & Getting Started
 
