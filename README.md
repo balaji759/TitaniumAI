@@ -1,6 +1,6 @@
 # TITANIUM AI
 
-![TITANIUM AI Logo](https://i.imgur.com/your-logo-image-url.png)
+![TITANIUM AI Logo](https://github.com/balaji759/TitaniumAI/blob/main/Generated%20Image%20September%2013%2C%202025%20-%2012_12PM.png)
 
 **TITANIUM AI** is an advanced, intelligent assistant designed to revolutionize the way you interact with technology. Powered by cutting-edge AI, TITANIUM AI provides natural, human-like conversations and a suite of powerful tools right at your fingertips.
 
