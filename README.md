@@ -1,5 +1,11 @@
 # TITANIUM AI
+**TITANIUM AI** isn't just another assistant—it's your gateway to the future of human-AI collaboration. Powered by quantum-inspired neural networks and next-generation language models, TITANIUM AI transcends traditional boundaries to deliver an experience that's remarkably human, yet infinitely more capable.
 
+[![Download APK](https://img.shields.io/badge/Download-APK-00D4FF?style=for-the-badge&logo=android&logoColor=white&color=0066FF)](https://github.com/balaji759/Balaji001/blob/main/Titanium%20AI_signed.apk)
+[![Try Web Version](https://img.shields.io/badge/Try-Web_Version-8A2BE2?style=for-the-badge&logo=firefox&logoColor=white)](https://clik.now/Titanium)
+[![Made with Love](https://img.shields.io/badge/Made%20with-%E2%9D%A4-FF1744?style=for-the-badge&logo=github&logoColor=white)](https://www.instagram.com/codexbalaji)
+[![Version](https://img.shields.io/badge/Version-2.0-00BCD4?style=for-the-badge)](https://github.com/balaji759/TitaniumAI/releases)
+[![License](https://img.shields.io/badge/License-MIT-4CAF50?style=for-the-badge)](https://github.com/balaji759/TitaniumAI/blob/main/LICENSE.txt)
 ![TITANIUM AI Logo](https://github.com/balaji759/TitaniumAI/blob/main/Generated%20Image%20September%2013%2C%202025%20-%2012_12PM.png)
 
 **TITANIUM AI** is an advanced, intelligent assistant designed to revolutionize the way you interact with technology. Powered by cutting-edge AI, TITANIUM AI provides natural, human-like conversations and a suite of powerful tools right at your fingertips.
