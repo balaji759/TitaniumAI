@@ -118,15 +118,3 @@ Your feedback is important to us! If you have any questions, run into issues, or
 ---
 
 <p align="center">Made with ❤️ by BALAJI</p>
-```
-
-### How to Use This README:
-
-1.  **Create a new file** in the root directory of your GitHub repository named `README.md`.
-2.  **Copy and paste** the entire text above into that file.
-3.  **Replace the placeholder links**:
-    *   `https://i.imgur.com/your-logo-image-url.png`: Replace this with a link to your actual TITANIUM AI logo. You can upload an image to your GitHub repository and get the link, or use an image hosting service like Imgur.
-    *   `https://i.imgur.com/screenshot1.png` (and the other screenshot links): Replace these with actual screenshots of your app. This is very important as it gives users a visual preview.
-4.  **Commit and push** the new `README.md` file to your GitHub repository.
-
-Now, when people visit your GitHub project, they will see this professional and informative README file that explains everything they need to know about TITANIUM AI!
