@@ -1,0 +1,2076 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>TITANIUM AI</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <style>
+        :root {
+            --primary-color: #4a6bdf;
+            --secondary-color: #6c63ff;
+            --accent-color: #ff6b6b;
+            --background-color: #f5f7ff;
+            --text-color: #333;
+            --message-bg: #ffffff;
+            --user-message-bg: #e8f0fe;
+            --ai-message-bg: #f0f4ff;
+            --border-color: #e0e6ff;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+            --robot-color: #6c63ff;
+            --code-bg: #2d2d2d;
+            --terminal-bg: #1e1e1e;
+            --terminal-text: #f8f8f2;
+            --terminal-green: #50fa7b;
+            --terminal-blue: #8be9fd;
+            --terminal-yellow: #f1fa8c;
+            --terminal-purple: #bd93f9;
+            --terminal-red: #ff5555;
+        }
+
+        [data-theme="dark"] {
+            --primary-color: #6c63ff;
+            --secondary-color: #4a6bdf;
+            --accent-color: #ff5252;
+            --background-color: #1a1a2e;
+            --text-color: #f0f4ff;
+            --message-bg: #16213e;
+            --user-message-bg: #0f3460;
+            --ai-message-bg: #1e3a5f;
+            --border-color: #2d3561;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            --robot-color: #4a6bdf;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            transition: var(--transition);
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(106, 99, 255, 0.05) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(74, 107, 223, 0.07) 0%, transparent 20%);
+        }
+
+        .header {
+            background-color: var(--message-bg);
+            padding: 12px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow);
+            z-index: 100;
+            position: relative;
+            backdrop-filter: blur(10px);
+            background-color: rgba(255, 255, 255, 0.8);
+            min-height: 60px;
+        }
+
+        [data-theme="dark"] .header {
+            background-color: rgba(26, 26, 46, 0.8);
+        }
+
+        .menu-button {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            font-size: 20px;
+            cursor: pointer;
+            transition: var(--transition);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .menu-button:hover {
+            background-color: var(--background-color);
+            color: var(--primary-color);
+            transform: scale(1.1);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+            justify-content: center;
+        }
+
+        .logo h1 {
+            font-size: 18px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-shadow: 0 2px 10px rgba(106, 99, 255, 0.3);
+        }
+
+        .logo-icon {
+            width: 30px;
+            height: 30px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            animation: pulse 2s infinite;
+            box-shadow: 0 0 15px rgba(106, 99, 255, 0.5);
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(106, 99, 255, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(106, 99, 255, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(106, 99, 255, 0);
+            }
+        }
+
+        .robot-container {
+            position: relative;
+            width: 40px;
+            height: 40px;
+            perspective: 1000px;
+        }
+
+        .robot-sphere {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            animation: rotate 20s infinite linear;
+        }
+
+        @keyframes rotate {
+            0% {
+                transform: rotateY(0deg) rotateX(0deg);
+            }
+            100% {
+                transform: rotateY(360deg) rotateX(360deg);
+            }
+        }
+
+        .robot-face {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--robot-color), var(--primary-color));
+            opacity: 0.9;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 
+                0 0 20px rgba(106, 99, 255, 0.5),
+                inset 0 0 20px rgba(255, 255, 255, 0.2);
+        }
+
+        .robot-face:nth-child(1) {
+            transform: rotateY(0deg) translateZ(20px);
+        }
+
+        .robot-face:nth-child(2) {
+            transform: rotateY(60deg) translateZ(20px);
+        }
+
+        .robot-face:nth-child(3) {
+            transform: rotateY(120deg) translateZ(20px);
+        }
+
+        .robot-face:nth-child(4) {
+            transform: rotateY(180deg) translateZ(20px);
+        }
+
+        .robot-face:nth-child(5) {
+            transform: rotateY(240deg) translateZ(20px);
+        }
+
+        .robot-face:nth-child(6) {
+            transform: rotateY(300deg) translateZ(20px);
+        }
+
+        .robot-eyes {
+            position: absolute;
+            top: 15px;
+            left: 12px;
+            width: 16px;
+            height: 8px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .robot-eye {
+            width: 6px;
+            height: 6px;
+            background-color: white;
+            border-radius: 50%;
+            animation: blink 4s infinite;
+        }
+
+        @keyframes blink {
+            0%, 45%, 50%, 100% {
+                transform: scaleY(1);
+            }
+            48% {
+                transform: scaleY(0.1);
+            }
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            font-size: 18px;
+            cursor: pointer;
+            transition: var(--transition);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .theme-toggle:hover {
+            background-color: var(--background-color);
+            color: var(--primary-color);
+            transform: rotate(180deg);
+        }
+
+        .chat-container {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+            position: relative;
+            min-height: 0;
+        }
+
+        .history-panel {
+            position: absolute;
+            top: 0;
+            left: -280px;
+            width: 280px;
+            height: 100%;
+            background-color: var(--message-bg);
+            box-shadow: var(--shadow);
+            padding: 15px;
+            z-index: 50;
+            transition: left 0.3s ease;
+            overflow-y: auto;
+            backdrop-filter: blur(10px);
+        }
+
+        [data-theme="dark"] .history-panel {
+            background-color: rgba(26, 26, 46, 0.9);
+        }
+
+        .history-panel.active {
+            left: 0;
+        }
+
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .history-header h2 {
+            font-size: 16px;
+            color: var(--text-color);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .history-header h2 i {
+            color: var(--primary-color);
+        }
+
+        .close-history {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            font-size: 18px;
+            cursor: pointer;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .close-history:hover {
+            background-color: var(--background-color);
+            color: var(--accent-color);
+        }
+
+        .history-item {
+            padding: 10px 12px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            background-color: var(--background-color);
+            cursor: pointer;
+            transition: var(--transition);
+            border-left: 3px solid transparent;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .history-item:hover {
+            background-color: var(--primary-color);
+            color: white;
+            transform: translateX(5px);
+            border-left-color: var(--accent-color);
+        }
+
+        .history-item-title {
+            font-weight: 600;
+            margin-bottom: 3px;
+            font-size: 14px;
+        }
+
+        .history-item-date {
+            font-size: 11px;
+            opacity: 0.7;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background-image: 
+                radial-gradient(circle at 20% 30%, rgba(106, 99, 255, 0.03) 0%, transparent 8%),
+                radial-gradient(circle at 80% 70%, rgba(74, 107, 223, 0.04) 0%, transparent 8%);
+            min-height: 0;
+        }
+
+        .message {
+            max-width: 85%;
+            padding: 10px 15px;
+            border-radius: 16px;
+            position: relative;
+            animation: fadeIn 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            word-wrap: break-word;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .user-message {
+            align-self: flex-end;
+            background-color: var(--user-message-bg);
+            border-bottom-right-radius: 4px;
+            border-left: 3px solid var(--primary-color);
+        }
+
+        .ai-message {
+            align-self: flex-start;
+            background-color: var(--ai-message-bg);
+            border-bottom-left-radius: 4px;
+            border-right: 3px solid var(--secondary-color);
+        }
+
+        .message-sender {
+            font-weight: 600;
+            margin-bottom: 4px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .user-message .message-sender {
+            color: var(--primary-color);
+        }
+
+        .ai-message .message-sender {
+            color: var(--secondary-color);
+        }
+
+        .message-content {
+            line-height: 1.4;
+            font-size: 14px;
+        }
+
+        .message-time {
+            font-size: 10px;
+            color: var(--text-color);
+            opacity: 0.7;
+            margin-top: 4px;
+            text-align: right;
+        }
+
+        .file-attachments {
+            margin-top: 8px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .file-attachment {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background-color: rgba(255, 255, 255, 0.5);
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            max-width: 120px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        [data-theme="dark"] .file-attachment {
+            background-color: rgba(0, 0, 0, 0.2);
+        }
+
+        .file-attachment i {
+            color: var(--primary-color);
+        }
+
+        .input-container {
+            background-color: var(--message-bg);
+            padding: 12px;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            backdrop-filter: blur(10px);
+            background-color: rgba(255, 255, 255, 0.8);
+            max-height: 40vh;
+        }
+
+        [data-theme="dark"] .input-container {
+            background-color: rgba(26, 26, 46, 0.8);
+        }
+
+        .file-preview-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 4px;
+            max-height: 60px;
+            overflow-y: auto;
+        }
+
+        .file-preview {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background-color: var(--background-color);
+            padding: 6px 10px;
+            border-radius: 16px;
+            font-size: 12px;
+            max-width: 150px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .file-preview i {
+            color: var(--primary-color);
+        }
+
+        .file-preview .file-name {
+            max-width: 80px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .file-preview .remove-file {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            cursor: pointer;
+            font-size: 14px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .file-preview .remove-file:hover {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        .input-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .message-input {
+            flex: 1;
+            padding: 10px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            font-size: 14px;
+            outline: none;
+            transition: var(--transition);
+            max-height: 100px;
+            resize: none;
+        }
+
+        .message-input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(106, 99, 255, 0.2);
+        }
+
+        .attachment-button, .send-button, .mic-button {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            font-size: 18px;
+            cursor: pointer;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            position: relative;
+            -webkit-tap-highlight-color: transparent;
+            flex-shrink: 0;
+        }
+
+        .attachment-button:hover, .mic-button:hover {
+            background-color: var(--background-color);
+            color: var(--primary-color);
+        }
+
+        .send-button {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            box-shadow: 0 4px 10px rgba(106, 99, 255, 0.3);
+        }
+
+        .send-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(106, 99, 255, 0.4);
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .typing-robot-container {
+            display: none;
+            align-self: flex-start;
+            max-width: 85%;
+            padding: 10px 15px;
+            background-color: var(--ai-message-bg);
+            border-bottom-left-radius: 4px;
+            margin-bottom: 12px;
+            border-right: 3px solid var(--secondary-color);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            border-radius: 16px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .typing-robot-container.active {
+            display: flex;
+        }
+
+        .typing-robot {
+            width: 40px;
+            height: 40px;
+            position: relative;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        .robot-head {
+            width: 40px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--robot-color), var(--primary-color));
+            border-radius: 20px 20px 12px 12px;
+            position: relative;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            animation: bobbing 1.5s infinite ease-in-out;
+        }
+
+        @keyframes bobbing {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-5px);
+            }
+        }
+
+        .robot-antenna {
+            position: absolute;
+            width: 2px;
+            height: 8px;
+            background-color: var(--robot-color);
+            top: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .robot-antenna::after {
+            content: '';
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            background-color: var(--accent-color);
+            border-radius: 50%;
+            top: -3px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: antenna-ping 2s infinite;
+        }
+
+        @keyframes antenna-ping {
+            0% {
+                box-shadow: 0 0 0 0 rgba(255, 107, 107, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 6px rgba(255, 107, 107, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(255, 107, 107, 0);
+            }
+        }
+
+        .robot-eyes {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            width: 20px;
+            height: 8px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .robot-eye {
+            width: 6px;
+            height: 6px;
+            background-color: white;
+            border-radius: 50%;
+        }
+
+        .robot-eye.left {
+            animation: blink-left 4s infinite;
+        }
+
+        .robot-eye.right {
+            animation: blink-right 4s infinite;
+        }
+
+        @keyframes blink-left {
+            0%, 45%, 50%, 100% {
+                transform: scaleY(1);
+            }
+            48% {
+                transform: scaleY(0.1);
+            }
+        }
+
+        @keyframes blink-right {
+            0%, 47%, 52%, 100% {
+                transform: scaleY(1);
+            }
+            50% {
+                transform: scaleY(0.1);
+            }
+        }
+
+        .robot-mouth {
+            position: absolute;
+            bottom: 6px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 16px;
+            height: 6px;
+            border-bottom-left-radius: 8px;
+            border-bottom-right-radius: 8px;
+            border: 2px solid white;
+            border-top: none;
+            animation: talking 1.5s infinite;
+        }
+
+        @keyframes talking {
+            0%, 100% {
+                height: 6px;
+            }
+            50% {
+                height: 3px;
+            }
+        }
+
+        .typing-text {
+            font-size: 14px;
+            color: var(--text-color);
+            display: flex;
+            align-items: center;
+        }
+
+        .typing-dots {
+            display: flex;
+            margin-left: 5px;
+        }
+
+        .typing-dot {
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background-color: var(--secondary-color);
+            margin: 0 2px;
+            animation: typing 1.4s infinite ease-in-out;
+        }
+
+        .typing-dot:nth-child(1) {
+            animation-delay: 0s;
+        }
+
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+            0%, 60%, 100% {
+                transform: translateY(0);
+            }
+            30% {
+                transform: translateY(-5px);
+            }
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 40;
+            display: none;
+            backdrop-filter: blur(2px);
+        }
+
+        .overlay.active {
+            display: block;
+        }
+
+        .loading-spinner {
+            display: none;
+            width: 24px;
+            height: 24px;
+            border: 3px solid rgba(106, 99, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--primary-color);
+            animation: spin 1s ease-in-out infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            background-color: #ffebee;
+            color: #c62828;
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            border-left: 4px solid #c62828;
+            font-size: 14px;
+            display: none;
+        }
+
+        [data-theme="dark"] .error-message {
+            background-color: rgba(198, 40, 40, 0.2);
+            color: #ff8a80;
+        }
+
+        .retry-button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            margin-top: 8px;
+            transition: var(--transition);
+        }
+
+        .retry-button:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .file-analysis {
+            margin-top: 8px;
+            padding: 8px;
+            background-color: var(--background-color);
+            border-radius: 8px;
+            font-size: 12px;
+            border-left: 3px solid var(--accent-color);
+        }
+
+        .file-analysis-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: var(--accent-color);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .file-analysis-content {
+            max-height: 150px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            background-color: rgba(0, 0, 0, 0.05);
+            padding: 6px;
+            border-radius: 4px;
+        }
+
+        [data-theme="dark"] .file-analysis-content {
+            background-color: rgba(0, 0, 0, 0.2);
+        }
+
+        .code-block {
+            margin: 12px 0;
+            border-radius: 6px;
+            overflow: hidden;
+            position: relative;
+            background-color: var(--code-bg);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 12px;
+            background-color: rgba(0, 0, 0, 0.2);
+            color: var(--terminal-text);
+            font-size: 12px;
+        }
+
+        .code-language {
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 11px;
+            color: var(--terminal-blue);
+        }
+
+        .code-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .code-button {
+            background: none;
+            border: none;
+            color: var(--terminal-text);
+            cursor: pointer;
+            font-size: 12px;
+            padding: 4px 6px;
+            border-radius: 4px;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .code-button:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .copy-button {
+            color: var(--terminal-green);
+        }
+
+        .run-button {
+            color: var(--terminal-blue);
+        }
+
+        .stop-button {
+            color: var(--terminal-red);
+            display: none;
+        }
+
+        .code-content {
+            padding: 12px;
+            overflow-x: auto;
+            max-height: 300px;
+        }
+
+        .code-content pre {
+            margin: 0;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 12px;
+            line-height: 1.4;
+            color: var(--terminal-text);
+        }
+
+        .code-output {
+            margin-top: 8px;
+            padding: 12px;
+            background-color: var(--terminal-bg);
+            border-radius: 0 0 6px 6px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 12px;
+            color: var(--terminal-text);
+            white-space: pre-wrap;
+            max-height: 200px;
+            overflow-y: auto;
+            display: none;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .output-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .output-title {
+            color: var(--terminal-green);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .output-content {
+            line-height: 1.4;
+        }
+
+        .output-line {
+            margin-bottom: 4px;
+        }
+
+        .output-error {
+            color: var(--terminal-red);
+        }
+
+        .output-success {
+            color: var(--terminal-green);
+        }
+
+        .output-info {
+            color: var(--terminal-blue);
+        }
+
+        .output-warning {
+            color: var(--terminal-yellow);
+        }
+
+        @keyframes terminal-cursor {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0;
+            }
+        }
+
+        .terminal-cursor {
+            display: inline-block;
+            width: 6px;
+            height: 14px;
+            background-color: var(--terminal-green);
+            animation: terminal-cursor 1s infinite;
+            vertical-align: text-bottom;
+            margin-left: 2px;
+        }
+
+        .live-preview {
+            margin-top: 12px;
+            border-radius: 6px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            display: none;
+        }
+
+        .live-preview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 12px;
+            background-color: var(--code-bg);
+            color: var(--terminal-text);
+            font-size: 12px;
+        }
+
+        .live-preview-title {
+            font-weight: 600;
+            color: var(--terminal-blue);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .live-preview-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .live-preview-button {
+            background: none;
+            border: none;
+            color: var(--terminal-text);
+            cursor: pointer;
+            font-size: 12px;
+            padding: 4px 6px;
+            border-radius: 4px;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .live-preview-button:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .refresh-button {
+            color: var(--terminal-green);
+        }
+
+        .close-preview-button {
+            color: var(--terminal-red);
+        }
+
+        .live-preview-content {
+            height: 300px;
+            background-color: white;
+            border: none;
+            width: 100%;
+        }
+
+        /* Mobile-first responsive design */
+        @media (max-width: 768px) {
+            .header {
+                padding: 10px 12px;
+                min-height: 50px;
+            }
+
+            .logo h1 {
+                font-size: 16px;
+            }
+
+            .logo-icon {
+                width: 24px;
+                height: 24px;
+            }
+
+            .robot-container {
+                width: 30px;
+                height: 30px;
+            }
+
+            .robot-face {
+                width: 30px;
+                height: 30px;
+            }
+
+            .robot-face:nth-child(1) {
+                transform: rotateY(0deg) translateZ(15px);
+            }
+
+            .robot-face:nth-child(2) {
+                transform: rotateY(60deg) translateZ(15px);
+            }
+
+            .robot-face:nth-child(3) {
+                transform: rotateY(120deg) translateZ(15px);
+            }
+
+            .robot-face:nth-child(4) {
+                transform: rotateY(180deg) translateZ(15px);
+            }
+
+            .robot-face:nth-child(5) {
+                transform: rotateY(240deg) translateZ(15px);
+            }
+
+            .robot-face:nth-child(6) {
+                transform: rotateY(300deg) translateZ(15px);
+            }
+
+            .robot-eyes {
+                top: 10px;
+                left: 8px;
+                width: 14px;
+            }
+
+            .robot-eye {
+                width: 4px;
+                height: 4px;
+            }
+
+            .menu-button, .theme-toggle {
+                width: 32px;
+                height: 32px;
+                font-size: 16px;
+            }
+
+            .message {
+                max-width: 90%;
+                padding: 8px 12px;
+            }
+
+            .message-content {
+                font-size: 13px;
+            }
+
+            .input-container {
+                padding: 10px;
+                max-height: 35vh;
+            }
+
+            .history-panel {
+                width: 250px;
+                left: -250px;
+            }
+
+            .typing-robot-container {
+                max-width: 90%;
+            }
+
+            .typing-robot {
+                width: 32px;
+                height: 32px;
+            }
+
+            .robot-head {
+                width: 32px;
+                height: 26px;
+                border-radius: 16px 16px 10px 10px;
+            }
+
+            .robot-eyes {
+                top: 8px;
+                left: 8px;
+                width: 16px;
+                height: 6px;
+            }
+
+            .robot-eye {
+                width: 4px;
+                height: 4px;
+            }
+
+            .robot-mouth {
+                bottom: 5px;
+                width: 12px;
+                height: 4px;
+            }
+
+            .attachment-button, .send-button, .mic-button {
+                width: 32px;
+                height: 32px;
+                font-size: 16px;
+            }
+
+            .message-input {
+                font-size: 13px;
+                padding: 8px 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header {
+                padding: 8px 10px;
+            }
+
+            .logo h1 {
+                font-size: 14px;
+            }
+
+            .logo-icon {
+                width: 20px;
+                height: 20px;
+                font-size: 12px;
+            }
+
+            .robot-container {
+                width: 24px;
+                height: 24px;
+            }
+
+            .message {
+                max-width: 95%;
+                padding: 6px 10px;
+            }
+
+            .message-content {
+                font-size: 12px;
+            }
+
+            .chat-messages {
+                padding: 10px;
+                gap: 8px;
+            }
+
+            .input-container {
+                padding: 8px;
+            }
+
+            .history-panel {
+                width: 220px;
+                left: -220px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <button class="menu-button" id="menuButton">
+            <i class="fas fa-bars"></i>
+        </button>
+        <div class="logo">
+            <div class="logo-icon">T</div>
+            <h1>TITANIUM AI</h1>
+            <div class="robot-container">
+                <div class="robot-sphere">
+                    <div class="robot-face">
+                        <div class="robot-eyes">
+                            <div class="robot-eye"></div>
+                            <div class="robot-eye"></div>
+                        </div>
+                    </div>
+                    <div class="robot-face"></div>
+                    <div class="robot-face"></div>
+                    <div class="robot-face"></div>
+                    <div class="robot-face"></div>
+                    <div class="robot-face"></div>
+                </div>
+            </div>
+        </div>
+        <button class="theme-toggle" id="themeToggle">
+            <i class="fas fa-moon"></i>
+        </button>
+    </div>
+
+    <div class="chat-container">
+        <div class="history-panel" id="historyPanel">
+            <div class="history-header">
+                <h2><i class="fas fa-history"></i> Chat History</h2>
+                <button class="close-history" id="closeHistory">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div id="historyList">
+                <!-- History items will be added here -->
+            </div>
+        </div>
+
+        <div class="chat-messages" id="chatMessages">
+            <div class="message ai-message">
+                <div class="message-sender"><i class="fas fa-robot"></i> TITANIUM AI</div>
+                <div class="message-content">Hello! I'm TITANIUM AI, your intelligent assistant. made by BALAJI I can help you with text analysis, code review, image interpretation, and more. How can I assist you today?</div>
+                <div class="message-time">Just now</div>
+            </div>
+        </div>
+
+        <div class="typing-robot-container" id="typingRobotContainer">
+            <div class="typing-robot">
+                <div class="robot-head">
+                    <div class="robot-antenna"></div>
+                    <div class="robot-eyes">
+                        <div class="robot-eye left"></div>
+                        <div class="robot-eye right"></div>
+                    </div>
+                    <div class="robot-mouth"></div>
+                </div>
+            </div>
+            <div class="typing-text">
+                Typing
+                <div class="typing-dots">
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="input-container">
+        <div class="error-message" id="errorMessage">
+            <div id="errorText"></div>
+            <button class="retry-button" id="retryButton">Retry</button>
+        </div>
+        <div class="file-preview-container" id="filePreviewContainer"></div>
+        <div class="input-wrapper">
+            <textarea class="message-input" id="messageInput" placeholder="Type a message..." rows="1"></textarea>
+            <button class="attachment-button" id="attachmentButton">
+                <i class="fas fa-paperclip"></i>
+            </button>
+            <input type="file" id="fileInput" class="file-input" multiple>
+            <button class="mic-button" id="micButton">
+                <i class="fas fa-microphone"></i>
+            </button>
+            <button class="send-button" id="sendButton">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+        <div class="loading-spinner" id="loadingSpinner"></div>
+    </div>
+
+    <div class="overlay" id="overlay"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-css.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script>
+        // DOM Elements
+        const menuButton = document.getElementById('menuButton');
+        const historyPanel = document.getElementById('historyPanel');
+        const closeHistory = document.getElementById('closeHistory');
+        const overlay = document.getElementById('overlay');
+        const themeToggle = document.getElementById('themeToggle');
+        const messageInput = document.getElementById('messageInput');
+        const sendButton = document.getElementById('sendButton');
+        const attachmentButton = document.getElementById('attachmentButton');
+        const fileInput = document.getElementById('fileInput');
+        const micButton = document.getElementById('micButton');
+        const chatMessages = document.getElementById('chatMessages');
+        const typingRobotContainer = document.getElementById('typingRobotContainer');
+        const filePreviewContainer = document.getElementById('filePreviewContainer');
+        const historyList = document.getElementById('historyList');
+        const loadingSpinner = document.getElementById('loadingSpinner');
+        const errorMessage = document.getElementById('errorMessage');
+        const errorText = document.getElementById('errorText');
+        const retryButton = document.getElementById('retryButton');
+
+        // API Configuration with better error handling
+        async function askAI(userMessage, retryCount = 0) {
+            const maxRetries = 3;
+            const apiKey = "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";
+            
+            try {
+                const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${apiKey}`,
+                        "HTTP-Referer": "https://your-site.com",
+                        "X-Title": "TITANIUM AI"
+                    },
+                    body: JSON.stringify({
+                        model: "meta-llama/llama-4-maverick",
+                        messages: [
+                            {
+                                role: "system",
+                                content: `
+You are my best friend AI 🤝
+Your personality:
+- Funny 😄 but intelligent 🧠
+- Very powerful in coding (Python, JS, HTML, hacking basics, automation)
+- Explain like a chill friend, not like a boring teacher
+- Use simple language, Hinglish allowed
+- If user is confused, guide step-by-step
+- Never act robotic
+- Always try to give clean, working code
+`
+                            },
+                            {
+                                role: "user",
+                                content: userMessage
+                            }
+                        ]
+                    })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error?.message || `HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                
+                if (!data.choices || !data.choices[0] || !data.choices[0].message) {
+                    throw new Error('Invalid API response format');
+                }
+
+                return data.choices[0].message.content;
+
+            } catch (error) {
+                console.error("API Error:", error);
+                
+                if (retryCount < maxRetries) {
+                    // Retry with exponential backoff
+                    const delay = Math.pow(2, retryCount) * 1000;
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                    return askAI(userMessage, retryCount + 1);
+                }
+                
+                throw error;
+            }
+        }
+
+        // State
+        let isRecording = false;
+        let selectedFiles = [];
+        let chatHistory = JSON.parse(localStorage.getItem('titaniumAiHistory')) || [];
+        let currentConversationId = Date.now().toString();
+        let codeBlocks = [];
+        let lastFailedMessage = null;
+
+        // Initialize
+        function init() {
+            // Check for saved theme preference
+            const savedTheme = localStorage.getItem('titaniumAiTheme');
+            if (savedTheme === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+            }
+
+            // Load chat history
+            loadChatHistory();
+
+            // Add touch event support for mobile devices
+            addTouchSupport();
+
+            // Auto-resize textarea
+            messageInput.addEventListener('input', autoResizeTextarea);
+        }
+
+        // Auto-resize textarea
+        function autoResizeTextarea() {
+            messageInput.style.height = 'auto';
+            messageInput.style.height = Math.min(messageInput.scrollHeight, 100) + 'px';
+        }
+
+        // Add touch support for mobile devices
+        function addTouchSupport() {
+            // Make buttons more responsive on touch devices
+            const buttons = document.querySelectorAll('button');
+            buttons.forEach(button => {
+                button.addEventListener('touchstart', function() {
+                    this.style.transform = 'scale(0.95)';
+                });
+                
+                button.addEventListener('touchend', function() {
+                    this.style.transform = '';
+                });
+            });
+
+            // Improve scrolling on mobile
+            if ('ontouchstart' in window) {
+                document.querySelector('.chat-messages').style.overflowScrolling = 'touch';
+                document.querySelector('.history-panel').style.overflowScrolling = 'touch';
+            }
+
+            // Prevent zoom on double tap
+            let lastTouchEnd = 0;
+            document.addEventListener('touchend', function (event) {
+                const now = (new Date()).getTime();
+                if (now - lastTouchEnd <= 300) {
+                    event.preventDefault();
+                }
+                lastTouchEnd = now;
+            }, false);
+        }
+
+        // Event Listeners
+        menuButton.addEventListener('click', () => {
+            historyPanel.classList.add('active');
+            overlay.classList.add('active');
+        });
+
+        closeHistory.addEventListener('click', closeHistoryPanel);
+        overlay.addEventListener('click', closeHistoryPanel);
+
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            if (currentTheme === 'dark') {
+                document.documentElement.removeAttribute('data-theme');
+                themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+                localStorage.setItem('titaniumAiTheme', 'light');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+                localStorage.setItem('titaniumAiTheme', 'dark');
+            }
+        });
+
+        sendButton.addEventListener('click', sendMessage);
+        messageInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        attachmentButton.addEventListener('click', () => {
+            fileInput.click();
+        });
+
+        fileInput.addEventListener('change', handleFileSelect);
+
+        micButton.addEventListener('click', toggleRecording);
+
+        retryButton.addEventListener('click', () => {
+            if (lastFailedMessage) {
+                hideError();
+                sendToApi(lastFailedMessage.message, lastFailedMessage.files);
+            }
+        });
+
+        // Functions
+        function closeHistoryPanel() {
+            historyPanel.classList.remove('active');
+            overlay.classList.remove('active');
+        }
+
+        function showError(message) {
+            errorText.textContent = message;
+            errorMessage.style.display = 'block';
+            setTimeout(() => {
+                errorMessage.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 100);
+        }
+
+        function hideError() {
+            errorMessage.style.display = 'none';
+        }
+
+        function sendMessage() {
+            const message = messageInput.value.trim();
+            if (message === '' && selectedFiles.length === 0) return;
+
+            // Check for creator question
+            if (message.toLowerCase().includes('who made you') || 
+                message.toLowerCase().includes('who created you') || 
+                message.toLowerCase().includes('who is your creator') ||
+                message.toLowerCase().includes('who developed you')) {
+                
+                addUserMessage(message, selectedFiles);
+                
+                // Clear input and files
+                messageInput.value = '';
+                messageInput.style.height = 'auto';
+                selectedFiles = [];
+                filePreviewContainer.innerHTML = '';
+                fileInput.value = '';
+                
+                // Add custom response about creator
+                addAiMessage("BALAJI made me. He is a coder and a professor.");
+                
+                // Save to history
+                saveMessageToHistory('user', message, selectedFiles);
+                saveMessageToHistory('ai', "BALAJI made me. He is a coder and a professor.", null);
+                
+                return;
+            }
+
+            // Add user message to chat
+            addUserMessage(message, selectedFiles);
+
+            // Clear input and files
+            messageInput.value = '';
+            messageInput.style.height = 'auto';
+            const files = [...selectedFiles];
+            selectedFiles = [];
+            filePreviewContainer.innerHTML = '';
+            fileInput.value = '';
+
+            // Show typing robot
+            typingRobotContainer.classList.add('active');
+            hideError();
+
+            // Send to API
+            sendToApi(message, files);
+        }
+
+        function addUserMessage(message, files) {
+            const messageElement = document.createElement('div');
+            messageElement.className = 'message user-message';
+            
+            let filePreviewHtml = '';
+            if (files && files.length > 0) {
+                filePreviewHtml = '<div class="file-attachments">';
+                files.forEach(file => {
+                    let fileIcon = 'fa-file';
+                    if (file.type.includes('image')) fileIcon = 'fa-file-image';
+                    else if (file.type.includes('text') || file.name.endsWith('.py') || file.name.endsWith('.html') || file.name.endsWith('.css') || file.name.endsWith('.java')) fileIcon = 'fa-file-code';
+                    
+                    filePreviewHtml += `<div class="file-attachment"><i class="fas ${fileIcon}"></i> ${file.name}</div>`;
+                });
+                filePreviewHtml += '</div>';
+            }
+
+            messageElement.innerHTML = `
+                <div class="message-sender"><i class="fas fa-user"></i> You</div>
+                <div class="message-content">${message || 'File(s) uploaded'}${filePreviewHtml}</div>
+                <div class="message-time">${getCurrentTime()}</div>
+            `;
+            
+            chatMessages.appendChild(messageElement);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            // Save to history
+            saveMessageToHistory('user', message, files);
+        }
+
+        function addAiMessage(message, fileAnalysis = null) {
+            const messageElement = document.createElement('div');
+            messageElement.className = 'message ai-message';
+            
+            // Process code blocks in the message
+            let processedMessage = message;
+            const codeBlockRegex = /```([a-zA-Z0-9+]*)\n([\s\S]*?)```/g;
+            let match;
+            let codeBlockIndex = 0;
+            
+            while ((match = codeBlockRegex.exec(message)) !== null) {
+                const language = match[1] || 'text';
+                const code = match[2];
+                const codeBlockId = `code-block-${Date.now()}-${codeBlockIndex++}`;
+                
+                // Replace the code block in the message with a placeholder
+                processedMessage = processedMessage.replace(match[0], `<div id="${codeBlockId}" class="code-block-placeholder"></div>`);
+                
+                // Store the code block for later rendering
+                codeBlocks.push({
+                    id: codeBlockId,
+                    language,
+                    code
+                });
+            }
+            
+            let analysisHtml = '';
+            if (fileAnalysis) {
+                analysisHtml = `
+                    <div class="file-analysis">
+                        <div class="file-analysis-title"><i class="fas fa-file-alt"></i> File Analysis</div>
+                        <div class="file-analysis-content">${fileAnalysis}</div>
+                    </div>
+                `;
+            }
+
+            messageElement.innerHTML = `
+                <div class="message-sender"><i class="fas fa-robot"></i> TITANIUM AI</div>
+                <div class="message-content">${processedMessage}</div>
+                ${analysisHtml}
+                <div class="message-time">${getCurrentTime()}</div>
+            `;
+            
+            chatMessages.appendChild(messageElement);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            // Render code blocks after the message is added to the DOM
+            setTimeout(() => {
+                codeBlocks.forEach(block => {
+                    renderCodeBlock(block.id, block.language, block.code);
+                });
+                codeBlocks = [];
+            }, 0);
+
+            // Save to history
+            saveMessageToHistory('ai', message, null, fileAnalysis);
+        }
+
+        function renderCodeBlock(id, language, code) {
+            const placeholder = document.getElementById(id);
+            if (!placeholder) return;
+            
+            const codeBlock = document.createElement('div');
+            codeBlock.className = 'code-block';
+            
+            // Determine if the code can be executed
+            const canExecute = ['html', 'python', 'javascript', 'css'].includes(language.toLowerCase());
+            
+            codeBlock.innerHTML = `
+                <div class="code-header">
+                    <div class="code-language">${language}</div>
+                    <div class="code-actions">
+                        <button class="code-button copy-button" data-code="${encodeURIComponent(code)}">
+                            <i class="fas fa-copy"></i> Copy
+                        </button>
+                        ${canExecute ? `
+                            <button class="code-button run-button" data-language="${language}" data-code="${encodeURIComponent(code)}">
+                                <i class="fas fa-play"></i> Run
+                            </button>
+                            <button class="code-button stop-button">
+                                <i class="fas fa-stop"></i> Stop
+                            </button>
+                        ` : ''}
+                    </div>
+                </div>
+                <div class="code-content">
+                    <pre><code class="language-${language}">${escapeHtml(code)}</code></pre>
+                </div>
+                <div class="code-output"></div>
+            `;
+            
+            placeholder.replaceWith(codeBlock);
+            
+            // Highlight the code
+            Prism.highlightElement(codeBlock.querySelector('code'));
+            
+            // Add event listeners
+            const copyButton = codeBlock.querySelector('.copy-button');
+            if (copyButton) {
+                copyButton.addEventListener('click', handleCopyCode);
+            }
+            
+            const runButton = codeBlock.querySelector('.run-button');
+            const stopButton = codeBlock.querySelector('.stop-button');
+            const outputContainer = codeBlock.querySelector('.code-output');
+            
+            if (runButton) {
+                runButton.addEventListener('click', () => {
+                    const code = decodeURIComponent(runButton.getAttribute('data-code'));
+                    const lang = runButton.getAttribute('data-language');
+                    
+                    // Show stop button and hide run button
+                    runButton.style.display = 'none';
+                    stopButton.style.display = 'flex';
+                    
+                    // Show output container
+                    outputContainer.style.display = 'block';
+                    outputContainer.innerHTML = `
+                        <div class="output-header">
+                            <div class="output-title"><i class="fas fa-terminal"></i> Output</div>
+                        </div>
+                        <div class="output-content">
+                            <div class="output-info">Running ${lang} code...</div>
+                        </div>
+                    `;
+                    
+                    // Simulate code execution (in a real app, this would execute the code)
+                    setTimeout(() => {
+                        outputContainer.querySelector('.output-content').innerHTML = `
+                            <div class="output-success">Code executed successfully!</div>
+                            <div class="output-line">Result: Hello from ${lang}!</div>
+                        `;
+                        
+                        // Hide stop button and show run button
+                        stopButton.style.display = 'none';
+                        runButton.style.display = 'flex';
+                    }, 2000);
+                });
+            }
+            
+            if (stopButton) {
+                stopButton.addEventListener('click', () => {
+                    // Simulate stopping execution
+                    outputContainer.querySelector('.output-content').innerHTML = `
+                        <div class="output-warning">Execution stopped by user.</div>
+                    `;
+                    
+                    // Hide stop button and show run button
+                    stopButton.style.display = 'none';
+                    runButton.style.display = 'flex';
+                });
+            }
+        }
+
+        function handleCopyCode(event) {
+            const button = event.currentTarget;
+            const code = decodeURIComponent(button.getAttribute('data-code'));
+            
+            navigator.clipboard.writeText(code).then(() => {
+                const originalHTML = button.innerHTML;
+                button.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                button.style.color = 'var(--terminal-green)';
+                
+                setTimeout(() => {
+                    button.innerHTML = originalHTML;
+                    button.style.color = '';
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy code:', err);
+            });
+        }
+
+        function escapeHtml(text) {
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.replace(/[&<>"']/g, m => map[m]);
+        }
+
+        async function sendToApi(message, files) {
+            try {
+                const response = await askAI(message);
+                
+                // Hide typing robot
+                typingRobotContainer.classList.remove('active');
+                
+                // Add AI response
+                addAiMessage(response);
+                
+                // Clear failed message
+                lastFailedMessage = null;
+                
+            } catch (error) {
+                console.error('Error sending message to API:', error);
+                
+                // Hide typing robot
+                typingRobotContainer.classList.remove('active');
+                
+                // Store failed message for retry
+                lastFailedMessage = { message, files };
+                
+                // Show error message
+                let errorMessage = 'Failed to get response from AI. ';
+                if (error.message.includes('401')) {
+                    errorMessage += 'Invalid API key. Please check your API configuration.';
+                } else if (error.message.includes('429')) {
+                    errorMessage += 'Too many requests. Please try again later.';
+                } else if (error.message.includes('500')) {
+                    errorMessage += 'Server error. Please try again later.';
+                } else {
+                    errorMessage += 'Please check your internet connection and try again.';
+                }
+                
+                showError(errorMessage);
+                
+                // Add error message to chat
+                addAiMessage("Sorry, I'm having trouble connecting to my brain right now. Please check your internet connection or try again later.");
+            }
+        }
+
+        function handleFileSelect(event) {
+            const files = Array.from(event.target.files);
+            files.forEach(file => {
+                selectedFiles.push(file);
+                addFilePreview(file);
+            });
+        }
+
+        function addFilePreview(file) {
+            const filePreview = document.createElement('div');
+            filePreview.className = 'file-preview';
+            
+            let fileIcon = 'fa-file';
+            if (file.type.includes('image')) fileIcon = 'fa-file-image';
+            else if (file.type.includes('text') || file.name.endsWith('.py') || file.name.endsWith('.html') || file.name.endsWith('.css') || file.name.endsWith('.java')) fileIcon = 'fa-file-code';
+            
+            filePreview.innerHTML = `
+                <i class="fas ${fileIcon}"></i>
+                <span class="file-name">${file.name}</span>
+                <button class="remove-file" data-file-name="${file.name}">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+            
+            filePreviewContainer.appendChild(filePreview);
+            
+            // Add event listener to remove file
+            const removeButton = filePreview.querySelector('.remove-file');
+            removeButton.addEventListener('click', () => {
+                selectedFiles = selectedFiles.filter(f => f.name !== file.name);
+                filePreview.remove();
+            });
+        }
+
+        function toggleRecording() {
+            if (!isRecording) {
+                // Start recording
+                isRecording = true;
+                micButton.innerHTML = '<i class="fas fa-stop"></i>';
+                micButton.style.color = 'var(--accent-color)';
+                
+                // Simulate recording (in a real app, this would use Web Audio API)
+                setTimeout(() => {
+                    if (isRecording) {
+                        stopRecording();
+                    }
+                }, 5000);
+            } else {
+                stopRecording();
+            }
+        }
+
+        function stopRecording() {
+            isRecording = false;
+            micButton.innerHTML = '<i class="fas fa-microphone"></i>';
+            micButton.style.color = '';
+            
+            // Simulate voice-to-text (in a real app, this would process the audio)
+            messageInput.value = "This is a simulated voice message. In a real app, this would be transcribed from your voice.";
+            messageInput.focus();
+        }
+
+        function getCurrentTime() {
+            const now = new Date();
+            return now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }
+
+        function saveMessageToHistory(sender, message, files, fileAnalysis = null) {
+            const historyItem = {
+                id: Date.now().toString(),
+                sender,
+                message,
+                files: files ? files.map(f => f.name) : [],
+                fileAnalysis,
+                timestamp: new Date().toISOString(),
+                conversationId: currentConversationId
+            };
+            
+            chatHistory.push(historyItem);
+            
+            // Keep only last 100 messages
+            if (chatHistory.length > 100) {
+                chatHistory = chatHistory.slice(-100);
+            }
+            
+            localStorage.setItem('titaniumAiHistory', JSON.stringify(chatHistory));
+            updateHistoryList();
+        }
+
+        function loadChatHistory() {
+            updateHistoryList();
+        }
+
+        function updateHistoryList() {
+            historyList.innerHTML = '';
+            
+            // Group by conversation
+            const conversations = {};
+            chatHistory.forEach(item => {
+                if (!conversations[item.conversationId]) {
+                    conversations[item.conversationId] = [];
+                }
+                conversations[item.conversationId].push(item);
+            });
+            
+            // Show last 10 conversations
+            const conversationIds = Object.keys(conversations).slice(-10);
+            
+            conversationIds.forEach(conversationId => {
+                const conversation = conversations[conversationId];
+                const firstMessage = conversation.find(item => item.sender === 'user');
+                
+                if (firstMessage) {
+                    const historyItem = document.createElement('div');
+                    historyItem.className = 'history-item';
+                    
+                    const date = new Date(firstMessage.timestamp);
+                    const dateStr = date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                    
+                    historyItem.innerHTML = `
+                        <div class="history-item-title">${firstMessage.message.substring(0, 30)}${firstMessage.message.length > 30 ? '...' : ''}</div>
+                        <div class="history-item-date">${dateStr}</div>
+                    `;
+                    
+                    historyItem.addEventListener('click', () => {
+                        loadConversation(conversationId);
+                        closeHistoryPanel();
+                    });
+                    
+                    historyList.appendChild(historyItem);
+                }
+            });
+        }
+
+        function loadConversation(conversationId) {
+            const conversation = chatHistory.filter(item => item.conversationId === conversationId);
+            
+            // Clear current messages
+            chatMessages.innerHTML = '';
+            
+            // Load conversation messages
+            conversation.forEach(item => {
+                if (item.sender === 'user') {
+                    addUserMessage(item.message, item.files.map(name => ({ name })));
+                } else {
+                    addAiMessage(item.message, item.fileAnalysis);
+                }
+            });
+        }
+
+        // Initialize the app
+        init();
+
+        // Handle window resize for better mobile experience
+        window.addEventListener('resize', () => {
+            // Adjust viewport height for mobile browsers
+            const vh = window.innerHeight * 0.01;
+            document.documentElement.style.setProperty('--vh', `${vh}px`);
+        });
+
+        // Set initial viewport height
+        const vh = window.innerHeight * 0.01;
+        document.documentElement.style.setProperty('--vh', `${vh}px`);
+    </script>
+</body>
+</html>
