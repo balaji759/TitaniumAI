@@ -1220,7 +1220,7 @@
         <div class="chat-messages" id="chatMessages">
             <div class="message ai-message">
                 <div class="message-sender"><i class="fas fa-robot"></i> TITANIUM AI</div>
-                <div class="message-content">Hello! I'm TITANIUM AI, your intelligent assistant. I can help you with text analysis, code review, image interpretation, and more. How can I assist you today?</div>
+                <div class="message-content">Hello! I'm TITANIUM AI, your intelligent assistant. made by BALAJI I can help you with text analysis, code review, image interpretation, and more. How can I assist you today?</div>
                 <div class="message-time">Just now</div>
             </div>
         </div>
@@ -1292,7 +1292,49 @@
         const loadingSpinner = document.getElementById('loadingSpinner');
 
         // API Configuration
-        const Api_Url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=AIzaSyDvmkIhNCGwePuDh3GIc9hOusWyOzFbfbI";
+        async function askAI(userMessage) {
+    try {
+        const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer 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",
+                "HTTP-Referer": "https://your-site.com",   // optional
+                "X-Title": "My Coding Friend AI"            // optional
+            },
+            body: JSON.stringify({
+                model: "meta-llama/llama-4-maverick",
+                messages: [
+                    {
+                        role: "system",
+                        content: `
+You are my best friend AI 🤝
+Your personality:
+- Funny 😄 but intelligent 🧠
+- Very powerful in coding (Python, JS, HTML, hacking basics, automation)
+- Explain like a chill friend, not like a boring teacher
+- Use simple language, Hinglish allowed
+- If user is confused, guide step-by-step
+- Never act robotic
+- Always try to give clean, working code
+`
+                    },
+                    {
+                        role: "user",
+                        content: userMessage
+                    }
+                ]
+            })
+        });
+
+        const data = await res.json();
+        console.log(data.choices[0].message.content);
+        return data.choices[0].message.content;
+
+    } catch (err) {
+        console.error("Error:", err);
+    }
+        }
 
         // State
         let isRecording = false;
